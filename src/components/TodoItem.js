@@ -59,7 +59,7 @@ function TodoItem({ todo }) {
                 todo.status === 'complete' && styles['todoText--completed'],
               ])}
             >
-              {todo.title}
+              {todo.number}
             </p>
             <p className={styles.time}>
               {format(new Date(todo.time), 'p, MM/dd/yyyy')}
