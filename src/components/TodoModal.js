@@ -4,7 +4,7 @@ import { MdOutlineClose } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { addTodo, updateTodo } from '../slices/todoSlice';
+import { addTodo } from '../slices/todoSlice';
 import styles from '../styles/modules/modal.module.scss';
 import Button from './Button';
 
@@ -33,17 +33,17 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState('');
   const [number, setNumber] = useState('');
-  const [status, setStatus] = useState('incomplete');
+  const [status, setStatus] = useState('unknown');
 
   useEffect(() => {
-    if (type === 'update' && todo) {
+    if (type === 'view') {
       setTitle(todo.title);
       setNumber(todo.number);
       setStatus(todo.status);
     } else {
       setTitle('');
       setNumber('');
-      setStatus('incomplete');
+      setStatus('unknown');
     }
   }, [type, todo, modalOpen]);
 
@@ -71,19 +71,6 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
           })
         );
         toast.success('Task added successfully');
-      }
-      if (type === 'update') {
-        if (
-          todo.title !== title ||
-          todo.number !== number ||
-          todo.status !== status
-        ) {
-          dispatch(updateTodo({ ...todo, title, number, status }));
-          toast.success('Task Updated successfully');
-        } else {
-          toast.error('No changes made');
-          return;
-        }
       }
       setModalOpen(false);
     }
@@ -148,13 +135,13 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
                 >
-                  <option value="incomplete">Incomplete</option>
-                  <option value="complete">Completed</option>
+                  <option value="unknown">Unknown</option>
+                  <option value="known">Known</option>
                 </select>
               </label>
               <div className={styles.buttonContainer}>
                 <Button type="submit" variant="primary">
-                  {type === 'add' ? 'Add Task' : 'Update Task'}
+                  {type === 'add' ? 'Add Task' : 'View Task'}
                 </Button>
                 <Button variant="secondary" onClick={() => setModalOpen(false)}>
                   Cancel
