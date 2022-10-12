@@ -32,22 +32,31 @@ const dropIn = {
 function TodoModal({ type, modalOpen, setModalOpen, todo }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState('');
+  const [number, setNumber] = useState('');
   const [status, setStatus] = useState('incomplete');
 
   useEffect(() => {
     if (type === 'update' && todo) {
       setTitle(todo.title);
+      setNumber(todo.number);
       setStatus(todo.status);
     } else {
       setTitle('');
+      setNumber('');
       setStatus('incomplete');
     }
   }, [type, todo, modalOpen]);
 
+  const regx = '(0/91)?[7-9][0-9]{9}';
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title === '') {
-      toast.error('Please enter a title');
+    if (title === '' || number === '') {
+      toast.error('Please enter all the fields');
+      return;
+    }
+    if (!number.match(regx)) {
+      toast.error('Please Enter a valid number');
       return;
     }
     if (title && status) {
@@ -56,6 +65,7 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
           addTodo({
             id: uuid(),
             title,
+            number,
             status,
             time: new Date().toLocaleString(),
           })
@@ -63,8 +73,12 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
         toast.success('Task added successfully');
       }
       if (type === 'update') {
-        if (todo.title !== title || todo.status !== status) {
-          dispatch(updateTodo({ ...todo, title, status }));
+        if (
+          todo.title !== title ||
+          todo.number !== number ||
+          todo.status !== status
+        ) {
+          dispatch(updateTodo({ ...todo, title, number, status }));
           toast.success('Task Updated successfully');
         } else {
           toast.error('No changes made');
@@ -107,15 +121,24 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
 
             <form className={styles.form} onSubmit={(e) => handleSubmit(e)}>
               <h1 className={styles.formTitle}>
-                {type === 'add' ? 'Add' : 'Update'} TODO
+                {type === 'add' ? 'Add' : 'Update'} Contact
               </h1>
               <label htmlFor="title">
-                Title
+                Name
                 <input
                   type="text"
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                />
+              </label>
+              <label htmlFor="title">
+                PhoneNumber
+                <input
+                  type="text"
+                  id="phone"
+                  value={number}
+                  onChange={(e) => setNumber(e.target.value)}
                 />
               </label>
               <label htmlFor="type">
