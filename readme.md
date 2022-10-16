@@ -13,7 +13,7 @@
  * Redux
  * React Icons
  * Date-fns
- * Franer-motion
+ * Framer-motion
 
 # Functionalities Provided:
 * Add and View a contact using Modal
